@@ -1,6 +1,7 @@
 <?php
 
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\TeacherController;
 
 /*
 |--------------------------------------------------------------------------
@@ -16,3 +17,9 @@ use Illuminate\Support\Facades\Route;
 Route::get('/', function () {
     return view('welcome');
 });
+
+Route::get('/ajax',[TeacherController::class,'index']);
+
+Route::get('/list',[TeacherController::class,'allData']);
+
+Route::post('/list/store',[TeacherController::class,'store']);
