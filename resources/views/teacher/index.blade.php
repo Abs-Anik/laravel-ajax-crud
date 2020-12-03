@@ -31,9 +31,7 @@
                 <th scope="col">Name</th>
                 <th scope="col">Title</th>
                 <th scope="col">Institute</th>
-                <th scope="col">Action</th>
-                <th></th>
-                
+                <th scope="col">Action</th> 
               </thead>
               <tbody>
                 {{--  <tr>
@@ -61,16 +59,19 @@
             <div class="form-group">
               <label for="name">Name</label>
               <input type="text" class="form-control" id="name" aria-describedby="emailHelp" placeholder="Enter Name">
+              <span class="text-danger" id="nameError"></span>
             </div>
 
             <div class="form-group">
               <label for="title">Title</label>
               <input type="text" class="form-control" id="title" placeholder="Enter Title">
+              <span class="text-danger" id="titleError"></span>
             </div>
 
             <div class="form-group">
               <label for="institute">Institute</label>
               <input type="text" class="form-control" id="institute" placeholder="Enter Institute">
+              <span class="text-danger" id="instituteError"></span>
             </div>
 
             <button type="submit" id="addButton" onclick="addData()" class="btn btn-primary">Add</button>
@@ -113,7 +114,7 @@
               data = data + "<td>"+value.title+"</td>"
               data = data + "<td>"+value.institute+"</td>"
               data = data + "<td>"
-              data = data + "<button class='btn btn-sm btn-primary mr-2'>Edit</button>"
+              data = data + "<button class='btn btn-sm btn-primary mr-2' onclick='dataEdit("+value.id+")'>Edit</button>"
               data = data + "<button class='btn btn-sm btn-danger'>Delete</button>"
               data = data + "</td>"
               data = data + "</tr>"
@@ -129,6 +130,9 @@
        $('#name').val(' ');
        $('#title').val(' ');
        $('#institute').val(' ');
+        $('#nameError').text(' ');
+        $('#titleError').text(' ');
+        $('#instituteError').text(' ');
       }
 
       function addData(){
@@ -145,6 +149,25 @@
             allData();
             clearData();
             console.log('Data Successfully Added');
+          },
+          error:function(error){
+            $('#nameError').text(error.responseJSON.errors.name);
+            $('#titleError').text(error.responseJSON.errors.title);
+            $('#instituteError').text(error.responseJSON.errors.institute);
+            
+          }
+        });
+      }
+
+      function dataEdit(id){   
+        $.ajax({
+          type: "GET",
+          dataType: 'json',
+          url: "{{ url('/list/edit') }}"+'/'+id,
+          success:function(response){
+            $('#name').val(response.name);
+            $('#title').val(response.title);
+            $('#institute').val(response.institute);
           }
         });
       }

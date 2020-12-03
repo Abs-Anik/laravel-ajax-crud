@@ -23,3 +23,5 @@ Route::get('/ajax',[TeacherController::class,'index']);
 Route::get('/list',[TeacherController::class,'allData']);
 
 Route::post('/list/store',[TeacherController::class,'store']);
+
+Route::get('/list/edit/{id}',[TeacherController::class,'edit']);

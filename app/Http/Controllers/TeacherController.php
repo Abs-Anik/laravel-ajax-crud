@@ -18,11 +18,22 @@ class TeacherController extends Controller
     }
 
     public function store(Request $request){
+        $request->validate([
+            'name' => 'required',
+            'title' => 'required',
+            'institute' => 'required'
+        ]);
         $data = Teacher::insert([
             'name' => $request->name,
             'title' => $request->title,
             'institute' => $request->institute
         ]);
+
+        return response()->json($data);
+    }
+
+    public function edit($id){
+        $data = Teacher::findOrFail($id);
 
         return response()->json($data);
     }
