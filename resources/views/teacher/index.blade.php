@@ -7,6 +7,7 @@
     <meta name="csrf-token" content="{{ csrf_token() }}" />
 
     <!-- Bootstrap CSS -->
+    <link rel="stylesheet" href="{{ asset('asset/css/sweetalert2.min.css') }}">
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css" integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous">
 
     <title>Laravel || Ajax</title>
@@ -89,8 +90,11 @@
     <!-- jQuery first, then Popper.js, then Bootstrap JS -->
    
     <script src="{{ asset('asset/js/jquery.min.js') }}"></script>
+    <script src="{{ asset('asset/js/sweetalert2.min.js') }}"></script>
+    <script src="{{ asset('asset/js/sweetalert.min.js') }}"></script>
     <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js" integrity="sha384-Q6E9RHvbIyZFJoft+2mJbHaEWldlvI9IOYy5n3zV9zzTtmI3UksdQRVvoxMfooAo" crossorigin="anonymous"></script>
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.min.js" integrity="sha384-wfSDF2E50Y2D1uUdj0O3uMBJnjuUD4Ih7YwaYd1iqfktj0Uod8GCExl3Og8ifwB6" crossorigin="anonymous"></script>
+    
     <script>
       $('#addT').show();
       $('#addButton').show();
@@ -117,7 +121,7 @@
               data = data + "<td>"+value.institute+"</td>"
               data = data + "<td>"
               data = data + "<button class='btn btn-sm btn-primary mr-2' onclick='dataEdit("+value.id+")'>Edit</button>"
-              data = data + "<button class='btn btn-sm btn-danger'>Delete</button>"
+              data = data + "<button class='btn btn-sm btn-danger' onclick='deleteData("+value.id+")'>Delete</button>"
               data = data + "</td>"
               data = data + "</tr>"
             });
@@ -148,9 +152,23 @@
           url: "{{ url('/list/store') }}",
           data: {name: name, title: title, institute: institute},
           success:function(response){
+
             allData();
             clearData();
-            console.log('Data Successfully Added');
+
+            const Msg = Swal.mixin({
+                    toast: true,
+                    position: 'top-end',
+                    icon: 'success',
+                    showConfirmButton: false,
+                    timer: 1500
+                  });
+
+             Msg.fire({
+                    type: 'success',
+                    title: 'Data Added Successfully'
+                  });
+            
           },
           error:function(error){
             $('#nameError').text(error.responseJSON.errors.name);
@@ -197,12 +215,66 @@
             $('#updateButton').hide();
             allData();
             clearData();
-            console.log('Data Successfully Updated');
+            const Msg = Swal.mixin({
+                    toast: true,
+                    position: 'top-end',
+                    icon: 'success',
+                    showConfirmButton: false,
+                    timer: 1500
+                  });
+
+             Msg.fire({
+                    type: 'success',
+                    title: 'Data Update Successfully'
+                  });
           },
           error:function(error){
               $('#nameError').text(error.responseJSON.errors.name);
               $('#titleError').text(error.responseJSON.errors.title);
               $('#instituteError').text(error.responseJSON.errors.institute);
+          }
+        });
+      }
+
+      function deleteData(id){
+        swal({
+          title: "Are You Sure To Delete",
+          text: "Once deleted, You will not be able to recover this imaginary file",
+          icon: "warning",
+          buttons: true,
+          dangerMode: true,
+        })
+
+        .then((willDelete) => {
+          if(willDelete){
+                  $.ajax({
+                  type: "GET",
+                  dataType: "json",
+                  url: "{{ url('/teacher/delete') }}"+'/'+id,
+                  success:function(response){
+                    $('#addT').show();
+                    $('#addButton').show();
+                    $('#updateT').hide();
+                    $('#updateButton').hide();
+                    allData();
+                    clearData();
+                    const Msg = Swal.mixin({
+                    toast: true,
+                    position: 'top-end',
+                    icon: 'success',
+                    showConfirmButton: false,
+                    timer: 1500
+                    });
+
+                    Msg.fire({
+                            type: 'success',
+                            title: 'Data Delete Successfully'
+                          });
+                  }
+              });
+          }
+          else{
+            swal("Canceled");
           }
         });
       }

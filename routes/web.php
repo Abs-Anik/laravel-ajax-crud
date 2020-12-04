@@ -27,3 +27,5 @@ Route::post('/list/store',[TeacherController::class,'store']);
 Route::get('/list/edit/{id}',[TeacherController::class,'edit']);
 
 Route::post('/list/update/{id}',[TeacherController::class,'update']);
+
+Route::get('/teacher/delete/{id}',[TeacherController::class,'delete']);
