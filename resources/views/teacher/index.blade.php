@@ -74,8 +74,10 @@
               <span class="text-danger" id="instituteError"></span>
             </div>
 
+            <input type="hidden" id="id">
+
             <button type="submit" id="addButton" onclick="addData()" class="btn btn-primary">Add</button>
-            <button type="submit" id="updateButton" class="btn btn-primary">Update</button>
+            <button type="submit" id="updateButton" onclick="updateData()" class="btn btn-primary">Update</button>
 
           </div>
         </div>
@@ -165,9 +167,42 @@
           dataType: 'json',
           url: "{{ url('/list/edit') }}"+'/'+id,
           success:function(response){
+            $('#addT').hide();
+            $('#addButton').hide();
+            $('#updateT').show();
+            $('#updateButton').show();
+            $('#id').val(response.id);
             $('#name').val(response.name);
             $('#title').val(response.title);
             $('#institute').val(response.institute);
+          }
+        });
+      }
+
+      function updateData(){
+        var id = $('#id').val();
+        var name = $('#name').val();
+        var title = $('#title').val();
+        var institute =  $('#institute').val();
+
+        $.ajax({
+          type: "POST",
+          dataType: "json",
+          data: {name: name, title: title, institute: institute},
+          url: "{{ url('/list/update') }}"+'/'+id,
+          success:function(response){
+            $('#addT').show();
+            $('#addButton').show();
+            $('#updateT').hide();
+            $('#updateButton').hide();
+            allData();
+            clearData();
+            console.log('Data Successfully Updated');
+          },
+          error:function(error){
+              $('#nameError').text(error.responseJSON.errors.name);
+              $('#titleError').text(error.responseJSON.errors.title);
+              $('#instituteError').text(error.responseJSON.errors.institute);
           }
         });
       }

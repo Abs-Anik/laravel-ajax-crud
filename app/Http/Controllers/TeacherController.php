@@ -37,4 +37,19 @@ class TeacherController extends Controller
 
         return response()->json($data);
     }
+
+    public function update(Request $request,$id){
+        $request->validate([
+            'name' => 'required',
+            'title' => 'required',
+            'institute' => 'required'
+        ]);
+        
+        $data = Teacher::findOrFail($id)->update([
+            'name' => $request->name,
+            'title' => $request->title,
+            'institute' => $request->institute
+        ]);
+        return response()->json($data);
+    }
 }
